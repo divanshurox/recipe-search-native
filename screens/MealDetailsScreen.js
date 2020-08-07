@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, Image, View, ScrollView } from "react-native";
-import { MEALS } from "../data/dummy-data";
+
+import { useSelector, useDispatch } from "react-redux";
+
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
 import IngredientItem from "../components/IngredientItem";
+
+import { toggleFavourite } from "../store/actions/mealActions";
 
 const ListItem = (props) => {
   return (
@@ -14,12 +18,28 @@ const ListItem = (props) => {
 };
 
 export default function MealDetailsScreen({ route, navigation }) {
+  const MEALS = useSelector((state) => state.meal.meals);
   const selectedMeal = MEALS.find((ele) => ele.id === route.params.mealId);
+  const isFav = useSelector((state) =>
+    state.meal.favouriteMeals.some((meal) => meal.id === selectedMeal.id)
+  );
+  const dispatch = useDispatch();
+
+  const toggleFavouriteHandler = (id) => {
+    dispatch(toggleFavourite(id));
+  };
+
   navigation.setOptions({
     title: selectedMeal.title,
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item title="Favourite" iconName="ios-star" onPress={() => {}} />
+        <Item
+          title="Favourite"
+          iconName={isFav ? "ios-star" : "ios-star-outline"}
+          onPress={() => {
+            toggleFavouriteHandler(selectedMeal.id);
+          }}
+        />
       </HeaderButtons>
     ),
   });

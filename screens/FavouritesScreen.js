@@ -3,10 +3,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
 import MealList from "../components/MealList";
-import { MEALS } from "../data/dummy-data";
+
+import { useSelector } from "react-redux";
 
 const FavouritesScreen = (props) => {
-  const displayData = MEALS.filter((ele) => ele.id === "m1" || ele.id === "m2");
+  const displayData = useSelector((state) => state.meal.favouriteMeals);
+
   props.navigation.setOptions({
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -20,7 +22,11 @@ const FavouritesScreen = (props) => {
   });
   return (
     <View style={styles.screen}>
-      <MealList meals={displayData} navigation={props.navigation} />
+      {displayData.length ? (
+        <MealList meals={displayData} navigation={props.navigation} />
+      ) : (
+        <Text>Go get some favourites!</Text>
+      )}
     </View>
   );
 };

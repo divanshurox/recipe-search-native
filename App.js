@@ -20,7 +20,18 @@ import FavouriteScreen from "./screens/FavouritesScreen";
 import FilterScreen from "./screens/FilterScreen";
 
 import { enableScreens } from "react-native-screens";
-import { Item } from "react-navigation-header-buttons";
+
+// Imports for Redux
+import { createStore, applyMiddleware, combineReducers } from "redux";
+import { Provider } from "react-redux";
+
+import mealReducer from "./store/reducers/meals";
+
+const rootReducer = combineReducers({
+  meal: mealReducer,
+});
+
+const store = createStore(rootReducer);
 
 enableScreens();
 
@@ -145,23 +156,25 @@ export default function App(props) {
   }
 
   return (
-    <NavigationContainer>
-      <Drawer.Navigator
-        drawerType="slide"
-        drawerContentOptions={{ activeTintColor: "orange" }}
-      >
-        <Drawer.Screen
-          name="MealsFav"
-          component={TabNavigation}
-          options={{ drawerLabel: "Meals" }}
-        />
-        <Drawer.Screen
-          name="MealFilter"
-          component={FilterStackScreen}
-          options={{ drawerLabel: "Filters" }}
-        />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Drawer.Navigator
+          drawerType="slide"
+          drawerContentOptions={{ activeTintColor: "orange" }}
+        >
+          <Drawer.Screen
+            name="MealsFav"
+            component={TabNavigation}
+            options={{ drawerLabel: "Meals" }}
+          />
+          <Drawer.Screen
+            name="MealFilter"
+            component={FilterStackScreen}
+            options={{ drawerLabel: "Filters" }}
+          />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
